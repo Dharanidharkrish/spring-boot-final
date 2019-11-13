@@ -57,9 +57,7 @@ lib 'shlib@nexus.groovy'
              stage('SonarQube analysis') {
             steps {
             sendNotifications 'SONAR ANALYSIS STARTED'
-              withSonarQubeEnv('sonarqube') {
-                sh 'mvn sonar:sonar'
-              }
+              sonar 'Sonar Qube'
             } 
             }
         stage('Quality Gate') {
