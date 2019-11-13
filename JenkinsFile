@@ -4,6 +4,7 @@ lib 'shlib'
 lib 'shlib@sonar.groovy'
 lib 'shlib@build.groovy'
 lib 'shlib@nexus.groovy'
+lib 'shlib@gate.groovy'
 }
 
  agent any
@@ -62,9 +63,7 @@ lib 'shlib@nexus.groovy'
             }
         stage('Quality Gate') {
             steps {
-              timeout(time: 5, unit: 'MINUTES') { // Just in case something goes wrong, pipeline will be killed after a timeout
-                waitForQualityGate abortPipeline: true //waiting for a task to be completed
-              }
+             gate 'GATE'
             }
        }
   
