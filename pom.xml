@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.Test</groupId>
 	<artifactId>myWebApp_Test</artifactId>
-	<version>1.0.0</version>
+	<version>${BUILD_NUMBER}</version>
 	<packaging>war</packaging>
 	<name>TestSpring</name>
 	<description>Demo project for Spring Boot</description>
