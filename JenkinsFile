@@ -32,32 +32,9 @@ lib 'shlib@deploy_ansible.groovy'
                  
             }
             }
-            /*stage('Approval'){
-                steps{
-                    timeout(time:3, unit: 'DAYS'){
-                       input 'Proceed with next job?'
-                      script{
-                         emailext mimeType: 'text/html',
-                 subject: "[Jenkins]${currentBuild.fullDisplayName}",
-                 to: "abhishek.gupta2015a@gmail.com",
-                 body: '''<a href="http://18.224.251.223:8080/">click to approve</a>'''
-
-        def userInput = input id: 'userInput',
-                              message: 'Let\'s promote?', 
-                              submitterParameter: 'submitter',
-                              submitter: 'Abhishek',
-                              parameters: [
-                                [$class: 'TextParameterDefinition', defaultValue: 'sit', description: 'Environment', name: 'env'],
-                                [$class: 'TextParameterDefinition', defaultValue: 'k8s', description: 'Target', name: 'target']]
-
-        echo ("Env: "+userInput['env'])
-        echo ("Target: "+userInput['target'])
-        echo ("submitted by: "+userInput['submitter'])
-                      }
-                    
-                    
-                }
-            }*/
+            
+                
+                 
              stage('SonarQube analysis') {
              environment {
            scannerHome=tool 'sonarScanner'
@@ -94,16 +71,33 @@ lib 'shlib@deploy_ansible.groovy'
                deploy_ansible  'deploy_ansible'
             } 
         }
+        
+        stage('Approval'){
+                steps{
+                approval 'APPROVAL'
+                }
+                
         stage('Deploy to Test Server'){
              steps{
                  sh 'ssh -t -t -i /var/lib/jenkins/.ssh/id_rsa ansadmin@172.31.31.91 "ansible-playbook /opt/playbooks/playfile.yml"'
              }
         }
+        
+        stage('Approval'){
+                steps{
+                approval 'APPROVAL'
+                }
+                
         stage('Deploy to Performance Server'){
              steps{
                  sh 'ssh -t -t -i /var/lib/jenkins/.ssh/id_rsa ansadmin@172.31.31.91 "ansible-playbook /opt/playbooks/performance.yml"'
              }
         }
+        stage('Approval'){
+                steps{
+                approval 'APPROVAL'
+                }
+                
         stage('Deploy to Production Server'){
              steps{
                  sh 'ssh -t -t -i /var/lib/jenkins/.ssh/id_rsa ansadmin@172.31.31.91 "ansible-playbook /opt/playbooks/production.yml"'
