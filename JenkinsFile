@@ -1,11 +1,10 @@
 pipeline {
-
+ agent any
 libraries{
 lib 'shlib'
 lib 'shlib@sonar.groovy'
 }
 
-    agent any
     tools{
         maven "Maven"
     }
