@@ -76,6 +76,7 @@ lib 'shlib@deploy_ansible.groovy'
                 steps{
                 approval 'APPROVAL'
                 }
+                }
                 
         stage('Deploy to Test Server'){
              steps{
@@ -87,7 +88,7 @@ lib 'shlib@deploy_ansible.groovy'
                 steps{
                 approval 'APPROVAL'
                 }
-                
+                }
         stage('Deploy to Performance Server'){
              steps{
                  sh 'ssh -t -t -i /var/lib/jenkins/.ssh/id_rsa ansadmin@172.31.31.91 "ansible-playbook /opt/playbooks/performance.yml"'
@@ -97,7 +98,7 @@ lib 'shlib@deploy_ansible.groovy'
                 steps{
                 approval 'APPROVAL'
                 }
-                
+                }
         stage('Deploy to Production Server'){
              steps{
                  sh 'ssh -t -t -i /var/lib/jenkins/.ssh/id_rsa ansadmin@172.31.31.91 "ansible-playbook /opt/playbooks/production.yml"'
