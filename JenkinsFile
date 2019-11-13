@@ -65,7 +65,9 @@ lib 'shlib@deploy_ansible.groovy'
 
             steps {
             sendNotifications 'SONAR ANALYSIS STARTED'
-              sonar 'Sonar Qube'
+                withSonarQubeEnv('SonarQube'){
+                     sh 'mvn sonar:sonar'
+                }
             } 
             }
         stage('Quality Gate') {
