@@ -5,6 +5,9 @@ lib 'shlib@sonar.groovy'
 lib 'shlib@build.groovy'
 lib 'shlib@nexus.groovy'
 lib 'shlib@gate.groovy'
+lib 'shlib@devenvironment.groovy'
+lib 'shlib@deploy_dev.groovy'
+lib 'shlib@deploy_ansible.groovy'
 }
 
  agent any
@@ -69,14 +72,38 @@ lib 'shlib@gate.groovy'
   
             stage("nexus") {
             steps {
-            nexus 'NEXUS STAGE STARTED'
-          withCredentials([usernamePassword(credentialsId: 'nexus_creds', passwordVariable: 'password', usernameVariable:'username')]) {
-              sh 'curl -u ${username}:${password} --upload-file target/myWebApp_Test-${BUILD_NUMBER}.war http://ec2-18-224-155-110.us-east-2.compute.amazonaws.com:8081/nexus/content/repositories/devopstraining/phoenixTeam/myWebApp_Test-${BUILD_NUMBER}.war'
-              //sh 'curl -u ${username}:${password} --upload-file target/WebApplication-1.war http://ec2-18-224-155-110.us-east-2.compute.amazonaws.com:8081/nexus/content/repositories/devopstraining/phoenixTeam/WebApplication-1.war'
-        //sh 'curl -v -F r=devopstraining -F hasPom=true -F e=war -F file=@pom.xml -F file=@target/WebApplication-0.0.1-SNAPSHOT.war -u ${username}:${password} http://ec2-18-224-155-110.us-east-2.compute.amazonaws.com:8081/nexus/content/repositories/devopstraining/phoenixTeam/WebApplication-0.0.1-SNAPSHOT.war'
-         }
+          sendNotifications  'NEXUS STAGE STARTED'
+          nexus 'NEXUS'
         }
         }
+         stage('Deploy to Development'){
+            steps{
+            devenvironment 'DEPLOY INTO DEV ENVIROINMENT'
+             deploy_development 'deploy_dev'
+            }
+        }
+        stage('Deploy to Ansible Master'){
+            steps{
+               sendNotifications 'Deploy to Ansible Master'
+               deploy_ansible  'deploy_ansible'
+            } 
+        }
+        stage('Deploy to Test Server'){
+             steps{
+                 sh 'ssh -t -t -i /var/lib/jenkins/.ssh/id_rsa ansadmin@172.31.31.91 "ansible-playbook /opt/playbooks/playfile.yml"'
+             }
+        }
+        stage('Deploy to Performance Server'){
+             steps{
+                 sh 'ssh -t -t -i /var/lib/jenkins/.ssh/id_rsa ansadmin@172.31.31.91 "ansible-playbook /opt/playbooks/performance.yml"'
+             }
+        }
+        stage('Deploy to Production Server'){
+             steps{
+                 sh 'ssh -t -t -i /var/lib/jenkins/.ssh/id_rsa ansadmin@172.31.31.91 "ansible-playbook /opt/playbooks/production.yml"'
+             }
+        }
+
       
         }
         post{
