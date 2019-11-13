@@ -1,29 +1,31 @@
 pipeline {
 
-/*libraries{
+libraries{
 lib 'shlib'
 lib 'shlib@sonar.groovy'
-}*/
+lib 'shlib@build.groovy'
+lib 'shlib@nexus.groovy'
+}
 
     agent any
     tools{
         maven "Maven"
     }
     stages {
-      /*stage('Start')
+      stage('Start')
             {
                 steps
                  { 
                     sendNotifications 'STARTED'
                  }
-            }*/
+            }
 
       stage('clean and build')
             {
                 steps{
                     
                  
-                  //sendNotifications 'STARTEDBUILD'
+                  sendNotifications 'STARTEDBUILD'
                     sh 'mvn clean package'
                  
             }
@@ -79,10 +81,10 @@ lib 'shlib@sonar.groovy'
        }
   
         }
-        /*post{
+        post{
 always{
 sendNotifications currentBuild.result
 }
-}*/
+}
 
     }
